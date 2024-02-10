@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "753057629183",
+    "project_id": "pick-e652b",
+    "storage_bucket": "pick-e652b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753057629183:android:73c553496f08b8cca99dca",
+        "android_client_info": {
+          "package_name": "com.mycompany.pick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753057629183-l236s1sm7eh7n5cjdo6nqiqcko5ttj2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBjQx40tiUTt-OkrMHy7zS5hGHFuJH33Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753057629183-l236s1sm7eh7n5cjdo6nqiqcko5ttj2q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "753057629183-0dmqah6004q2itoffp70jdnm78mlgdt6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "filippo.gerola.Pick"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
