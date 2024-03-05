@@ -18,6 +18,16 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   DocumentReference? postUserRef;
   // Stores action output result for [Backend Call - Read Document] action in HomePage widget.
   UsersRecord? postUser;
+  // Stores action output result for [Custom Action - updateCategoryStatus] action in Card widget.
+  List<String>? catList;
+  // Stores action output result for [Custom Action - getUserDocRefFromString] action in Container widget.
+  DocumentReference? postUserRefProfile;
+  // Stores action output result for [Custom Action - newPost] action in Button widget.
+  PostsRow? newPostBtn;
+  // Stores action output result for [Custom Action - getUserDocRefFromString] action in Button widget.
+  DocumentReference? postUserRefBtn;
+  // Stores action output result for [Backend Call - Read Document] action in Button widget.
+  UsersRecord? postUserBtn;
 
   /// Initialization and disposal methods.
 

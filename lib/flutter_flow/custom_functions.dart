@@ -28,8 +28,8 @@ List<int> updateVotes(
   return votes;
 }
 
-int mostVotedPic(PostsRecord post) {
-  List<int> voteList = post.numVotes;
+int mostVotedPic(PostStruct post) {
+  List<int> voteList = post.votes;
   var maxIndex = 0;
   var maxValue = 0;
 
@@ -41,4 +41,36 @@ int mostVotedPic(PostsRecord post) {
   }
 
   return maxIndex;
+}
+
+List<String> categoryList() {
+  List<String> cat = [
+    'Tutti',
+    'Abbigliamento',
+    'Occhiali',
+    'Acconciatura',
+    'Make-up',
+    'Fotografia',
+    'Tatuaggi',
+    'Animali',
+    'Luoghi'
+  ];
+
+  return cat;
+}
+
+bool getCategoryStatus(
+  String cat,
+  List<CategoryStruct> appStateCatStatus,
+) {
+  bool status = false;
+
+  for (CategoryStruct c in appStateCatStatus) {
+    if (c.name == cat) {
+      status = c.active;
+    }
+    ;
+  }
+  ;
+  return status;
 }

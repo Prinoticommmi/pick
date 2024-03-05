@@ -13,9 +13,32 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-Future<PostsRecord> getRandomPost(List<PostsRecord> postList) async {
+Future<List<String>> updateCategoryStatus(
+  String cat,
+  List<CategoryStruct> appStateCatStatus,
+) async {
   // Add your function code here!
-  return selectRandomPost(postList);
+
+  if (cat == 'Tutti') {
+    for (CategoryStruct c in appStateCatStatus) {
+      c.active = true;
+    }
+  } else {
+    for (CategoryStruct c in appStateCatStatus) {
+      if (c.name == cat) {
+        c.active = (!c.active);
+      }
+    }
+  }
+  ;
+
+  List<String> activeCats = [];
+
+  for (CategoryStruct c in appStateCatStatus) {
+    if (c.name != 'Tutti' && c.active) {
+      activeCats.add(c.name);
+    }
+  }
+
+  return activeCats;
 }
-// Set your action name, define your arguments and return parameter,
-// and then add the boilerplate code using the green button on the right!

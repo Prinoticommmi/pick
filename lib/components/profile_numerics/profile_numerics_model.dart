@@ -1,11 +1,13 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'personal_profile_widget.dart' show PersonalProfileWidget;
+import 'profile_numerics_widget.dart' show ProfileNumericsWidget;
 import 'package:flutter/material.dart';
 
-class PersonalProfileModel extends FlutterFlowModel<PersonalProfileWidget> {
-  ///  State fields for stateful widgets in this page.
+class ProfileNumericsModel extends FlutterFlowModel<ProfileNumericsWidget> {
+  ///  Local state fields for this component.
 
-  final unfocusNode = FocusNode();
+  int followers = 0;
+
+  int following = 0;
 
   /// Initialization and disposal methods.
 
@@ -13,9 +15,7 @@ class PersonalProfileModel extends FlutterFlowModel<PersonalProfileWidget> {
   void initState(BuildContext context) {}
 
   @override
-  void dispose() {
-    unfocusNode.dispose();
-  }
+  void dispose() {}
 
   /// Action blocks are added here.
 

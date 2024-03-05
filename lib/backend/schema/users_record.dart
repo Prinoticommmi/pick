@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import '/backend/schema/util/firestore_util.dart';
 
 import 'index.dart';
+import '/flutter_flow/flutter_flow_util.dart';
 
 class UsersRecord extends FirestoreRecord {
   UsersRecord._(
@@ -59,6 +60,21 @@ class UsersRecord extends FirestoreRecord {
   String get photoUrlBlurHash => _photoUrlBlurHash ?? '';
   bool hasPhotoUrlBlurHash() => _photoUrlBlurHash != null;
 
+  // "following" field.
+  int? _following;
+  int get following => _following ?? 0;
+  bool hasFollowing() => _following != null;
+
+  // "followers" field.
+  int? _followers;
+  int get followers => _followers ?? 0;
+  bool hasFollowers() => _followers != null;
+
+  // "posts" field.
+  int? _posts;
+  int get posts => _posts ?? 0;
+  bool hasPosts() => _posts != null;
+
   void _initializeFields() {
     _email = snapshotData['email'] as String?;
     _displayName = snapshotData['display_name'] as String?;
@@ -69,6 +85,9 @@ class UsersRecord extends FirestoreRecord {
     _userBio = snapshotData['user_bio'] as String?;
     _yearOfBirth = snapshotData['year_of_birth'] as String?;
     _photoUrlBlurHash = snapshotData['photo_url_blur_hash'] as String?;
+    _following = castToType<int>(snapshotData['following']);
+    _followers = castToType<int>(snapshotData['followers']);
+    _posts = castToType<int>(snapshotData['posts']);
   }
 
   static CollectionReference get collection =>
@@ -114,6 +133,9 @@ Map<String, dynamic> createUsersRecordData({
   String? userBio,
   String? yearOfBirth,
   String? photoUrlBlurHash,
+  int? following,
+  int? followers,
+  int? posts,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -126,6 +148,9 @@ Map<String, dynamic> createUsersRecordData({
       'user_bio': userBio,
       'year_of_birth': yearOfBirth,
       'photo_url_blur_hash': photoUrlBlurHash,
+      'following': following,
+      'followers': followers,
+      'posts': posts,
     }.withoutNulls,
   );
 
@@ -145,7 +170,10 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
         e1?.phoneNumber == e2?.phoneNumber &&
         e1?.userBio == e2?.userBio &&
         e1?.yearOfBirth == e2?.yearOfBirth &&
-        e1?.photoUrlBlurHash == e2?.photoUrlBlurHash;
+        e1?.photoUrlBlurHash == e2?.photoUrlBlurHash &&
+        e1?.following == e2?.following &&
+        e1?.followers == e2?.followers &&
+        e1?.posts == e2?.posts;
   }
 
   @override
@@ -158,7 +186,10 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
         e?.phoneNumber,
         e?.userBio,
         e?.yearOfBirth,
-        e?.photoUrlBlurHash
+        e?.photoUrlBlurHash,
+        e?.following,
+        e?.followers,
+        e?.posts
       ]);
 
   @override

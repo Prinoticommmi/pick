@@ -14,25 +14,25 @@ class FollowersRecord extends FirestoreRecord {
     _initializeFields();
   }
 
-  // "User" field.
-  DocumentReference? _user;
-  DocumentReference? get user => _user;
-  bool hasUser() => _user != null;
+  // "follower" field.
+  DocumentReference? _follower;
+  DocumentReference? get follower => _follower;
+  bool hasFollower() => _follower != null;
 
-  // "Datetime_following" field.
-  DateTime? _datetimeFollowing;
-  DateTime? get datetimeFollowing => _datetimeFollowing;
-  bool hasDatetimeFollowing() => _datetimeFollowing != null;
+  // "tmst" field.
+  DateTime? _tmst;
+  DateTime? get tmst => _tmst;
+  bool hasTmst() => _tmst != null;
 
-  // "Following" field.
-  DocumentReference? _following;
-  DocumentReference? get following => _following;
-  bool hasFollowing() => _following != null;
+  // "followed" field.
+  DocumentReference? _followed;
+  DocumentReference? get followed => _followed;
+  bool hasFollowed() => _followed != null;
 
   void _initializeFields() {
-    _user = snapshotData['User'] as DocumentReference?;
-    _datetimeFollowing = snapshotData['Datetime_following'] as DateTime?;
-    _following = snapshotData['Following'] as DocumentReference?;
+    _follower = snapshotData['follower'] as DocumentReference?;
+    _tmst = snapshotData['tmst'] as DateTime?;
+    _followed = snapshotData['followed'] as DocumentReference?;
   }
 
   static CollectionReference get collection =>
@@ -70,15 +70,15 @@ class FollowersRecord extends FirestoreRecord {
 }
 
 Map<String, dynamic> createFollowersRecordData({
-  DocumentReference? user,
-  DateTime? datetimeFollowing,
-  DocumentReference? following,
+  DocumentReference? follower,
+  DateTime? tmst,
+  DocumentReference? followed,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
-      'User': user,
-      'Datetime_following': datetimeFollowing,
-      'Following': following,
+      'follower': follower,
+      'tmst': tmst,
+      'followed': followed,
     }.withoutNulls,
   );
 
@@ -90,14 +90,14 @@ class FollowersRecordDocumentEquality implements Equality<FollowersRecord> {
 
   @override
   bool equals(FollowersRecord? e1, FollowersRecord? e2) {
-    return e1?.user == e2?.user &&
-        e1?.datetimeFollowing == e2?.datetimeFollowing &&
-        e1?.following == e2?.following;
+    return e1?.follower == e2?.follower &&
+        e1?.tmst == e2?.tmst &&
+        e1?.followed == e2?.followed;
   }
 
   @override
   int hash(FollowersRecord? e) =>
-      const ListEquality().hash([e?.user, e?.datetimeFollowing, e?.following]);
+      const ListEquality().hash([e?.follower, e?.tmst, e?.followed]);
 
   @override
   bool isValidKey(Object? o) => o is FollowersRecord;

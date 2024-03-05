@@ -26,6 +26,20 @@ class FFAppState extends ChangeNotifier {
           await secureStorage.getStringList('ff_activeCategories') ??
               _activeCategories;
     });
+    await _safeInitAsync(() async {
+      _categoryStatus = (await secureStorage.getStringList('ff_categoryStatus'))
+              ?.map((x) {
+                try {
+                  return CategoryStruct.fromSerializableMap(jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _categoryStatus;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -83,6 +97,70 @@ class FFAppState extends ChangeNotifier {
   void insertAtIndexInActiveCategories(int index, String value) {
     _activeCategories.insert(index, value);
     secureStorage.setStringList('ff_activeCategories', _activeCategories);
+  }
+
+  List<CategoryStruct> _categoryStatus = [
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Abbigliamento","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Occhiali","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Acconciatura","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Make-up","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Fotografia","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Tatuaggi","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Animali","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Luoghi","active":"true"}')),
+    CategoryStruct.fromSerializableMap(
+        jsonDecode('{"name":"Tutti","active":"true"}'))
+  ];
+  List<CategoryStruct> get categoryStatus => _categoryStatus;
+  set categoryStatus(List<CategoryStruct> value) {
+    _categoryStatus = value;
+    secureStorage.setStringList(
+        'ff_categoryStatus', value.map((x) => x.serialize()).toList());
+  }
+
+  void deleteCategoryStatus() {
+    secureStorage.delete(key: 'ff_categoryStatus');
+  }
+
+  void addToCategoryStatus(CategoryStruct value) {
+    _categoryStatus.add(value);
+    secureStorage.setStringList('ff_categoryStatus',
+        _categoryStatus.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromCategoryStatus(CategoryStruct value) {
+    _categoryStatus.remove(value);
+    secureStorage.setStringList('ff_categoryStatus',
+        _categoryStatus.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromCategoryStatus(int index) {
+    _categoryStatus.removeAt(index);
+    secureStorage.setStringList('ff_categoryStatus',
+        _categoryStatus.map((x) => x.serialize()).toList());
+  }
+
+  void updateCategoryStatusAtIndex(
+    int index,
+    CategoryStruct Function(CategoryStruct) updateFn,
+  ) {
+    _categoryStatus[index] = updateFn(_categoryStatus[index]);
+    secureStorage.setStringList('ff_categoryStatus',
+        _categoryStatus.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInCategoryStatus(int index, CategoryStruct value) {
+    _categoryStatus.insert(index, value);
+    secureStorage.setStringList('ff_categoryStatus',
+        _categoryStatus.map((x) => x.serialize()).toList());
   }
 }
 

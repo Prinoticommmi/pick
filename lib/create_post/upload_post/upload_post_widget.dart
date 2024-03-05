@@ -1,4 +1,5 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -8,7 +9,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/flutter_flow/upload_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'upload_post_model.dart';
 export 'upload_post_model.dart';
@@ -48,15 +48,6 @@ class _UploadPostWidgetState extends State<UploadPostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (isiOS) {
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
-          statusBarBrightness: Theme.of(context).brightness,
-          systemStatusBarContrastEnforced: true,
-        ),
-      );
-    }
-
     context.watch<FFAppState>();
 
     return GestureDetector(
@@ -346,6 +337,13 @@ class _UploadPostWidgetState extends State<UploadPostWidget> {
                           }
                         }
 
+                        await currentUserReference!.update({
+                          ...mapToFirestore(
+                            {
+                              'posts': FieldValue.increment(1),
+                            },
+                          ),
+                        });
                         await PostsTable().insert({
                           'user_guid': currentUserReference?.id,
                           'photos': _model.uploadedFileUrls,

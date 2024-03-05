@@ -1,13 +1,13 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:octo_image/octo_image.dart';
 import 'package:provider/provider.dart';
 import 'personal_profile_model.dart';
@@ -40,15 +40,6 @@ class _PersonalProfileWidgetState extends State<PersonalProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (isiOS) {
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
-          statusBarBrightness: Theme.of(context).brightness,
-          systemStatusBarContrastEnforced: true,
-        ),
-      );
-    }
-
     context.watch<FFAppState>();
 
     return FutureBuilder<int>(
@@ -274,10 +265,14 @@ class _PersonalProfileWidgetState extends State<PersonalProfileWidget> {
                                   Column(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Text(
-                                        personalProfileCount.toString(),
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium,
+                                      AuthUserStreamWidget(
+                                        builder: (context) => Text(
+                                          valueOrDefault(
+                                                  currentUserDocument?.posts, 0)
+                                              .toString(),
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium,
+                                        ),
                                       ),
                                       Text(
                                         'Posts',
@@ -289,40 +284,16 @@ class _PersonalProfileWidgetState extends State<PersonalProfileWidget> {
                                   Column(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      FutureBuilder<int>(
-                                        future: queryFollowersRecordCount(
-                                          queryBuilder: (followersRecord) =>
-                                              followersRecord.where(
-                                            'Following',
-                                            isEqualTo: currentUserReference,
-                                          ),
+                                      AuthUserStreamWidget(
+                                        builder: (context) => Text(
+                                          valueOrDefault(
+                                                  currentUserDocument
+                                                      ?.followers,
+                                                  0)
+                                              .toString(),
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium,
                                         ),
-                                        builder: (context, snapshot) {
-                                          // Customize what your widget looks like when it's loading.
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 50.0,
-                                                height: 50.0,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                          int followersCount = snapshot.data!;
-                                          return Text(
-                                            followersCount.toString(),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          );
-                                        },
                                       ),
                                       Text(
                                         'Followers',
@@ -334,40 +305,16 @@ class _PersonalProfileWidgetState extends State<PersonalProfileWidget> {
                                   Column(
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      FutureBuilder<int>(
-                                        future: queryFollowersRecordCount(
-                                          queryBuilder: (followersRecord) =>
-                                              followersRecord.where(
-                                            'User',
-                                            isEqualTo: currentUserReference,
-                                          ),
+                                      AuthUserStreamWidget(
+                                        builder: (context) => Text(
+                                          valueOrDefault(
+                                                  currentUserDocument
+                                                      ?.following,
+                                                  0)
+                                              .toString(),
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium,
                                         ),
-                                        builder: (context, snapshot) {
-                                          // Customize what your widget looks like when it's loading.
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 50.0,
-                                                height: 50.0,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                          int followingCount = snapshot.data!;
-                                          return Text(
-                                            followingCount.toString(),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          );
-                                        },
                                       ),
                                       Text(
                                         'Following',
@@ -447,77 +394,83 @@ class _PersonalProfileWidgetState extends State<PersonalProfileWidget> {
                                   color: FlutterFlowTheme.of(context)
                                       .secondaryBackground,
                                 ),
-                                child: PagedGridView<DocumentSnapshot<Object?>?,
-                                    PostsRecord>(
-                                  pagingController:
-                                      _model.setGridViewController(
-                                    PostsRecord.collection.where(
-                                      'post_user',
-                                      isEqualTo: currentUserReference,
-                                    ),
+                                child: FutureBuilder<List<PostsRow>>(
+                                  future: PostsTable().queryRows(
+                                    queryFn: (q) => q
+                                        .eq(
+                                          'user_guid',
+                                          currentUserReference?.id,
+                                        )
+                                        .order('created_at'),
                                   ),
-                                  padding: EdgeInsets.zero,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 10.0,
-                                    mainAxisSpacing: 10.0,
-                                    childAspectRatio: 1.0,
-                                  ),
-                                  scrollDirection: Axis.vertical,
-                                  builderDelegate:
-                                      PagedChildBuilderDelegate<PostsRecord>(
-                                    // Customize what your widget looks like when it's loading the first page.
-                                    firstPageProgressIndicatorBuilder: (_) =>
-                                        Center(
-                                      child: SizedBox(
-                                        width: 50.0,
-                                        height: 50.0,
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            FlutterFlowTheme.of(context)
-                                                .primary,
+                                  builder: (context, snapshot) {
+                                    // Customize what your widget looks like when it's loading.
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 50.0,
+                                          height: 50.0,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              FlutterFlowTheme.of(context)
+                                                  .primary,
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    // Customize what your widget looks like when it's loading another page.
-                                    newPageProgressIndicatorBuilder: (_) =>
-                                        Center(
-                                      child: SizedBox(
-                                        width: 50.0,
-                                        height: 50.0,
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            FlutterFlowTheme.of(context)
-                                                .primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    itemBuilder: (context, _, gridViewIndex) {
-                                      final gridViewPostsRecord = _model
-                                          .gridViewPagingController!
-                                          .itemList![gridViewIndex];
-                                      return ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        child: Image.network(
-                                          valueOrDefault<String>(
-                                            gridViewPostsRecord
-                                                .postPhotos.first,
-                                            '1',
-                                          ),
-                                          width: 300.0,
-                                          height: 200.0,
-                                          fit: BoxFit.cover,
                                         ),
                                       );
-                                    },
-                                  ),
+                                    }
+                                    List<PostsRow> gridViewPostsRowList =
+                                        snapshot.data!;
+                                    return GridView.builder(
+                                      padding: EdgeInsets.zero,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 10.0,
+                                        mainAxisSpacing: 10.0,
+                                        childAspectRatio: 1.0,
+                                      ),
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: gridViewPostsRowList.length,
+                                      itemBuilder: (context, gridViewIndex) {
+                                        final gridViewPostsRow =
+                                            gridViewPostsRowList[gridViewIndex];
+                                        return Container(
+                                          width: 100.0,
+                                          height: 100.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryBackground,
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                            child: OctoImage(
+                                              placeholderBuilder:
+                                                  OctoPlaceholder.blurHash(
+                                                gridViewPostsRow.photosBlurHash[
+                                                    functions.mostVotedPic(
+                                                        PostStruct(
+                                                  votes: gridViewPostsRow.votes,
+                                                ))],
+                                              ),
+                                              image: NetworkImage(
+                                                gridViewPostsRow.photos[
+                                                    functions.mostVotedPic(
+                                                        PostStruct(
+                                                  votes: gridViewPostsRow.votes,
+                                                ))],
+                                              ),
+                                              width: 300.0,
+                                              height: 200.0,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
                                 ),
                               ),
                             ),

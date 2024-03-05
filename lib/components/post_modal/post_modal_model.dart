@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'post_header_widget.dart' show PostHeaderWidget;
+import 'post_modal_widget.dart' show PostModalWidget;
 import 'package:flutter/material.dart';
 
-class PostHeaderModel extends FlutterFlowModel<PostHeaderWidget> {
+class PostModalModel extends FlutterFlowModel<PostModalWidget> {
   /// Initialization and disposal methods.
 
   @override

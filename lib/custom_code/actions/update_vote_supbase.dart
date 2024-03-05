@@ -26,5 +26,5 @@ Future updateVoteSupbase(
     return null;
   }
 
-  return PostsRow(data[math.Random().nextInt(data.length)]);
+  return PostsRow(data[0]);
 }

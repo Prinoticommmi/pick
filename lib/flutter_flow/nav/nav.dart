@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/backend/backend.dart';
 import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
@@ -128,17 +127,20 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Profile',
           path: '/profile',
-          asyncParams: {
-            'userProfile': getDoc(['users'], UsersRecord.fromSnapshot),
-          },
           builder: (context, params) => ProfileWidget(
-            userProfile: params.getParam('userProfile', ParamType.Document),
+            userProfile: params.getParam(
+                'userProfile', ParamType.DocumentReference, false, ['users']),
           ),
         ),
         FFRoute(
           name: 'EditProfile',
           path: '/editProfile',
           builder: (context, params) => const EditProfileWidget(),
+        ),
+        FFRoute(
+          name: 'tttt',
+          path: '/tttt',
+          builder: (context, params) => const TtttWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -310,6 +312,7 @@ class FFRoute {
           return null;
         },
         pageBuilder: (context, state) {
+          fixStatusBarOniOS16AndBelow(context);
           final ffParams = FFParameters(state, asyncParams);
           final page = ffParams.hasFutures
               ? FutureBuilder(

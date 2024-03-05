@@ -22,7 +22,7 @@ Future vote(
     ),
   );
   await VotesTable().insert({
-    'post_user_guid': FFAppState().post.id.toString(),
+    'post_user_guid': FFAppState().post.userUid?.id,
     'post_voter_guid': currentUserReference?.id,
     'photo_index': index,
     'photo_url': FFAppState().post.photos[index],

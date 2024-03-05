@@ -21,7 +21,7 @@ select Description from Category
 class CategoriesRow extends SqliteRow {
   CategoriesRow(super.data);
 
-  String get category => data['category'] as String;
+  String? get category => data['category'] as String?;
 }
 
 /// END CATEGORIES
@@ -39,7 +39,7 @@ select Description from Category where active = 1
 class ActiveCategoriesRow extends SqliteRow {
   ActiveCategoriesRow(super.data);
 
-  String get category => data['category'] as String;
+  String? get category => data['category'] as String?;
 }
 
 /// END ACTIVECATEGORIES

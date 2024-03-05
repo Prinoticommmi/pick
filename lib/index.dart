@@ -11,3 +11,4 @@ export '/log_in/create_profile/create_profile_widget.dart'
     show CreateProfileWidget;
 export '/pages/profile/profile_widget.dart' show ProfileWidget;
 export '/pages/edit_profile/edit_profile_widget.dart' show EditProfileWidget;
+export '/pages/tttt/tttt_widget.dart' show TtttWidget;
