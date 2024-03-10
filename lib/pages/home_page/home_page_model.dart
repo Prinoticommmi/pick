@@ -1,5 +1,6 @@
 import '/backend/backend.dart';
 import '/backend/supabase/supabase.dart';
+import '/components/vote_count/vote_count_widget.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'home_page_widget.dart' show HomePageWidget;
 import 'package:flutter/material.dart';
@@ -22,6 +23,14 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   List<String>? catList;
   // Stores action output result for [Custom Action - getUserDocRefFromString] action in Container widget.
   DocumentReference? postUserRefProfile;
+  // Model for voteCount component.
+  late VoteCountModel voteCountModel1;
+  // Model for voteCount component.
+  late VoteCountModel voteCountModel2;
+  // Model for voteCount component.
+  late VoteCountModel voteCountModel3;
+  // Model for voteCount component.
+  late VoteCountModel voteCountModel4;
   // Stores action output result for [Custom Action - newPost] action in Button widget.
   PostsRow? newPostBtn;
   // Stores action output result for [Custom Action - getUserDocRefFromString] action in Button widget.
@@ -32,11 +41,20 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   /// Initialization and disposal methods.
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    voteCountModel1 = createModel(context, () => VoteCountModel());
+    voteCountModel2 = createModel(context, () => VoteCountModel());
+    voteCountModel3 = createModel(context, () => VoteCountModel());
+    voteCountModel4 = createModel(context, () => VoteCountModel());
+  }
 
   @override
   void dispose() {
     unfocusNode.dispose();
+    voteCountModel1.dispose();
+    voteCountModel2.dispose();
+    voteCountModel3.dispose();
+    voteCountModel4.dispose();
   }
 
   /// Action blocks are added here.

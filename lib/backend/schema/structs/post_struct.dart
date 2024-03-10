@@ -22,6 +22,7 @@ class PostStruct extends FFFirebaseStruct {
     List<int>? votes,
     int? nComments,
     String? category,
+    List<String>? photosHash,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _isFetched = isFetched,
         _isVoted = isVoted,
@@ -35,6 +36,7 @@ class PostStruct extends FFFirebaseStruct {
         _votes = votes,
         _nComments = nComments,
         _category = category,
+        _photosHash = photosHash,
         super(firestoreUtilData);
 
   // "is_fetched" field.
@@ -114,6 +116,14 @@ class PostStruct extends FFFirebaseStruct {
   set category(String? val) => _category = val;
   bool hasCategory() => _category != null;
 
+  // "photos_hash" field.
+  List<String>? _photosHash;
+  List<String> get photosHash => _photosHash ?? const [];
+  set photosHash(List<String>? val) => _photosHash = val;
+  void updatePhotosHash(Function(List<String>) updateFn) =>
+      updateFn(_photosHash ??= []);
+  bool hasPhotosHash() => _photosHash != null;
+
   static PostStruct fromMap(Map<String, dynamic> data) => PostStruct(
         isFetched: data['is_fetched'] as bool?,
         isVoted: data['is_voted'] as bool?,
@@ -127,6 +137,7 @@ class PostStruct extends FFFirebaseStruct {
         votes: getDataList(data['votes']),
         nComments: castToType<int>(data['n_comments']),
         category: data['category'] as String?,
+        photosHash: getDataList(data['photos_hash']),
       );
 
   static PostStruct? maybeFromMap(dynamic data) =>
@@ -145,6 +156,7 @@ class PostStruct extends FFFirebaseStruct {
         'votes': _votes,
         'n_comments': _nComments,
         'category': _category,
+        'photos_hash': _photosHash,
       }.withoutNulls;
 
   @override
@@ -198,6 +210,11 @@ class PostStruct extends FFFirebaseStruct {
         'category': serializeParam(
           _category,
           ParamType.String,
+        ),
+        'photos_hash': serializeParam(
+          _photosHash,
+          ParamType.String,
+          true,
         ),
       }.withoutNulls;
 
@@ -264,6 +281,11 @@ class PostStruct extends FFFirebaseStruct {
           ParamType.String,
           false,
         ),
+        photosHash: deserializeParam<String>(
+          data['photos_hash'],
+          ParamType.String,
+          true,
+        ),
       );
 
   @override
@@ -284,7 +306,8 @@ class PostStruct extends FFFirebaseStruct {
         description == other.description &&
         listEquality.equals(votes, other.votes) &&
         nComments == other.nComments &&
-        category == other.category;
+        category == other.category &&
+        listEquality.equals(photosHash, other.photosHash);
   }
 
   @override
@@ -300,7 +323,8 @@ class PostStruct extends FFFirebaseStruct {
         description,
         votes,
         nComments,
-        category
+        category,
+        photosHash
       ]);
 }
 

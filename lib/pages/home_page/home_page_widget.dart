@@ -1,5 +1,6 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/components/vote_count/vote_count_widget.dart';
 import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -9,6 +10,7 @@ import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:octo_image/octo_image.dart';
 import 'package:provider/provider.dart';
 import 'home_page_model.dart';
@@ -44,7 +46,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       if (_model.newPost == null) {
         setState(() {
           FFAppState().post = PostStruct.fromSerializableMap(
-              jsonDecode('{"photos":"[]","votes":"[]"}'));
+              jsonDecode('{\"photos\":\"[]\",\"votes\":\"[]\"}'));
         });
         return;
       } else {
@@ -123,7 +125,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: 40.0,
                   decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondary,
+                    color: FlutterFlowTheme.of(context).primaryBackground,
                   ),
                   child: Builder(
                     builder: (context) {
@@ -158,20 +160,24 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 color: functions.getCategoryStatus(catItem,
                                         FFAppState().categoryStatus.toList())
-                                    ? FlutterFlowTheme.of(context).primary
-                                    : FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                elevation: 4.0,
+                                    ? FlutterFlowTheme.of(context)
+                                        .secondaryBackground
+                                    : FlutterFlowTheme.of(context).accent3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24.0),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
-                                      6.0, 6.0, 6.0, 10.0),
+                                      10.0, 6.0, 10.0, 10.0),
                                   child: Text(
                                     catItem,
-                                    style:
-                                        FlutterFlowTheme.of(context).bodyMedium,
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                          fontFamily: 'Readex Pro',
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -187,259 +193,391 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     width: MediaQuery.sizeOf(context).width * 1.0,
                     height: 100.0,
                     decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      color: FlutterFlowTheme.of(context).primaryBackground,
                     ),
                     child: Builder(
                       builder: (context) {
                         if (FFAppState().post.isFetched) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        _model.postUserRefProfile =
-                                            await actions
-                                                .getUserDocRefFromString(
-                                          FFAppState().post.userUid!.id,
-                                        );
+                          return Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                6.0, 0.0, 6.0, 0.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          _model.postUserRefProfile =
+                                              await actions
+                                                  .getUserDocRefFromString(
+                                            FFAppState().post.userUid!.id,
+                                          );
 
-                                        context.pushNamed(
-                                          'Profile',
-                                          queryParameters: {
-                                            'userProfile': serializeParam(
-                                              _model.postUserRefProfile,
-                                              ParamType.DocumentReference,
-                                            ),
-                                          }.withoutNulls,
-                                        );
+                                          context.pushNamed(
+                                            'Profile',
+                                            queryParameters: {
+                                              'userProfile': serializeParam(
+                                                _model.postUserRefProfile,
+                                                ParamType.DocumentReference,
+                                              ),
+                                            }.withoutNulls,
+                                          );
 
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        width: 100.0,
-                                        height: 70.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              FFAppState().post.description,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(6.0),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(24.0),
-                                                child: OctoImage(
-                                                  placeholderBuilder:
-                                                      OctoPlaceholder.blurHash(
-                                                    valueOrDefault<String>(
-                                                      FFAppState()
-                                                          .post
-                                                          .userProfilePicHash,
-                                                      'jdoceaoijcroecjerj',
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          width: 100.0,
+                                          height: 70.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryBackground,
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                FFAppState().post.description,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(6.0),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          24.0),
+                                                  child: OctoImage(
+                                                    placeholderBuilder: (_) =>
+                                                        SizedBox.expand(
+                                                      child: Image(
+                                                        image: BlurHashImage(
+                                                            valueOrDefault<
+                                                                String>(
+                                                          FFAppState()
+                                                              .post
+                                                              .userProfilePicHash,
+                                                          'jdoceaoijcroecjerj',
+                                                        )),
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  image: NetworkImage(
-                                                    valueOrDefault<String>(
-                                                      FFAppState()
-                                                          .post
-                                                          .userProfilePic,
-                                                      'https://picsum.photos/seed/752/600',
+                                                    image: NetworkImage(
+                                                      valueOrDefault<String>(
+                                                        FFAppState()
+                                                            .post
+                                                            .userProfilePic,
+                                                        'https://picsum.photos/seed/752/600',
+                                                      ),
                                                     ),
+                                                    width: 60.0,
+                                                    height: 60.0,
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                  width: 60.0,
-                                                  height: 60.0,
-                                                  fit: BoxFit.cover,
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Expanded(
-                                child: Container(
-                                  width: MediaQuery.sizeOf(context).width * 1.0,
-                                  height: 100.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                width: 100.0,
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        1.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryBackground,
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    Align(
-                                                      alignment:
-                                                          const AlignmentDirectional(
-                                                              0.0, 0.0),
-                                                      child: InkWell(
-                                                        splashColor:
-                                                            Colors.transparent,
-                                                        focusColor:
-                                                            Colors.transparent,
-                                                        hoverColor:
-                                                            Colors.transparent,
-                                                        highlightColor:
-                                                            Colors.transparent,
-                                                        onTap: () async {
-                                                          await Navigator.push(
-                                                            context,
-                                                            PageTransition(
-                                                              type:
-                                                                  PageTransitionType
-                                                                      .fade,
-                                                              child:
-                                                                  FlutterFlowExpandedImageView(
-                                                                image: Image
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 1.0,
+                                    height: 100.0,
+                                    decoration: BoxDecoration(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  width: 100.0,
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          1.0,
+                                                  decoration: BoxDecoration(
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primaryBackground,
+                                                  ),
+                                                  child: Align(
+                                                    alignment:
+                                                        const AlignmentDirectional(
+                                                            0.0, 0.0),
+                                                    child: Stack(
+                                                      children: [
+                                                        Align(
+                                                          alignment:
+                                                              const AlignmentDirectional(
+                                                                  0.0, 0.0),
+                                                          child: InkWell(
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            focusColor: Colors
+                                                                .transparent,
+                                                            hoverColor: Colors
+                                                                .transparent,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            onTap: () async {
+                                                              await Navigator
+                                                                  .push(
+                                                                context,
+                                                                PageTransition(
+                                                                  type:
+                                                                      PageTransitionType
+                                                                          .fade,
+                                                                  child:
+                                                                      FlutterFlowExpandedImageView(
+                                                                    image: Image
+                                                                        .network(
+                                                                      FFAppState()
+                                                                          .post
+                                                                          .photos[0],
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                    ),
+                                                                    allowRotation:
+                                                                        false,
+                                                                    tag: FFAppState()
+                                                                        .post
+                                                                        .photos[0],
+                                                                    useHeroAnimation:
+                                                                        true,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            onDoubleTap:
+                                                                () async {
+                                                              await action_blocks
+                                                                  .vote(
+                                                                context,
+                                                                index: 0,
+                                                              );
+                                                              setState(() {});
+                                                            },
+                                                            child: Hero(
+                                                              tag: FFAppState()
+                                                                  .post
+                                                                  .photos[0],
+                                                              transitionOnUserGestures:
+                                                                  true,
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                                child: Image
                                                                     .network(
                                                                   FFAppState()
                                                                       .post
                                                                       .photos[0],
+                                                                  width: 300.0,
+                                                                  height: 100.0,
                                                                   fit: BoxFit
-                                                                      .contain,
+                                                                      .cover,
                                                                 ),
-                                                                allowRotation:
-                                                                    false,
-                                                                tag: FFAppState()
-                                                                    .post
-                                                                    .photos[0],
-                                                                useHeroAnimation:
-                                                                    true,
                                                               ),
-                                                            ),
-                                                          );
-                                                        },
-                                                        onDoubleTap: () async {
-                                                          await action_blocks
-                                                              .vote(
-                                                            context,
-                                                            index: 0,
-                                                          );
-                                                          setState(() {});
-                                                        },
-                                                        child: Hero(
-                                                          tag: FFAppState()
-                                                              .post
-                                                              .photos[0],
-                                                          transitionOnUserGestures:
-                                                              true,
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                            child:
-                                                                Image.network(
-                                                              FFAppState()
-                                                                  .post
-                                                                  .photos[0],
-                                                              width: 300.0,
-                                                              height: 100.0,
-                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
+                                                        if (FFAppState()
+                                                            .post
+                                                            .isVoted)
+                                                          Align(
+                                                            alignment:
+                                                                const AlignmentDirectional(
+                                                                    0.0, 0.0),
+                                                            child:
+                                                                wrapWithModel(
+                                                              model: _model
+                                                                  .voteCountModel1,
+                                                              updateCallback:
+                                                                  () => setState(
+                                                                      () {}),
+                                                              child:
+                                                                  VoteCountWidget(
+                                                                picNumber: 0,
+                                                                post:
+                                                                    FFAppState()
+                                                                        .post,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                      ],
                                                     ),
-                                                    if (FFAppState()
-                                                        .post
-                                                        .isVoted)
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  width: 100.0,
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          1.0,
+                                                  decoration: BoxDecoration(
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primaryBackground,
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
                                                       Align(
                                                         alignment:
                                                             const AlignmentDirectional(
                                                                 0.0, 0.0),
-                                                        child: Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration:
-                                                              const BoxDecoration(),
-                                                          child: Visibility(
-                                                            visible:
+                                                        child: InkWell(
+                                                          splashColor: Colors
+                                                              .transparent,
+                                                          focusColor: Colors
+                                                              .transparent,
+                                                          hoverColor: Colors
+                                                              .transparent,
+                                                          highlightColor: Colors
+                                                              .transparent,
+                                                          onTap: () async {
+                                                            await Navigator
+                                                                .push(
+                                                              context,
+                                                              PageTransition(
+                                                                type:
+                                                                    PageTransitionType
+                                                                        .fade,
+                                                                child:
+                                                                    FlutterFlowExpandedImageView(
+                                                                  image: Image
+                                                                      .network(
+                                                                    FFAppState()
+                                                                        .post
+                                                                        .photos[1],
+                                                                    fit: BoxFit
+                                                                        .contain,
+                                                                  ),
+                                                                  allowRotation:
+                                                                      false,
+                                                                  tag: FFAppState()
+                                                                      .post
+                                                                      .photos[1],
+                                                                  useHeroAnimation:
+                                                                      true,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          onDoubleTap:
+                                                              () async {
+                                                            await action_blocks
+                                                                .vote(
+                                                              context,
+                                                              index: 1,
+                                                            );
+                                                            setState(() {});
+                                                          },
+                                                          child: Hero(
+                                                            tag: FFAppState()
+                                                                .post
+                                                                .photos[1],
+                                                            transitionOnUserGestures:
+                                                                true,
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8.0),
+                                                              child:
+                                                                  Image.network(
                                                                 FFAppState()
                                                                     .post
-                                                                    .isVoted,
-                                                            child: Align(
-                                                              alignment:
-                                                                  const AlignmentDirectional(
-                                                                      0.0, 0.0),
-                                                              child: Text(
-                                                                FFAppState()
-                                                                    .post
-                                                                    .votes[0]
-                                                                    .toString(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium,
+                                                                    .photos[1],
+                                                                width: 300.0,
+                                                                height: 200.0,
+                                                                fit: BoxFit
+                                                                    .cover,
                                                               ),
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                  ],
+                                                      if (FFAppState()
+                                                          .post
+                                                          .isVoted)
+                                                        Align(
+                                                          alignment:
+                                                              const AlignmentDirectional(
+                                                                  0.0, 0.0),
+                                                          child: wrapWithModel(
+                                                            model: _model
+                                                                .voteCountModel2,
+                                                            updateCallback:
+                                                                () => setState(
+                                                                    () {}),
+                                                            child:
+                                                                VoteCountWidget(
+                                                              picNumber: 1,
+                                                              post: FFAppState()
+                                                                  .post,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                width: 100.0,
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        1.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryBackground,
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    Align(
-                                                      alignment:
-                                                          const AlignmentDirectional(
-                                                              0.0, 0.0),
-                                                      child: InkWell(
+                                            ]
+                                                .divide(const SizedBox(width: 8.0))
+                                                .addToStart(
+                                                    const SizedBox(width: 4.0))
+                                                .addToEnd(const SizedBox(width: 4.0)),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  width: 100.0,
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          1.0,
+                                                  decoration: BoxDecoration(
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primaryBackground,
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      InkWell(
                                                         splashColor:
                                                             Colors.transparent,
                                                         focusColor:
@@ -461,7 +599,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     .network(
                                                                   FFAppState()
                                                                       .post
-                                                                      .photos[1],
+                                                                      .photos[2],
                                                                   fit: BoxFit
                                                                       .contain,
                                                                 ),
@@ -469,7 +607,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     false,
                                                                 tag: FFAppState()
                                                                     .post
-                                                                    .photos[1],
+                                                                    .photos[2],
                                                                 useHeroAnimation:
                                                                     true,
                                                               ),
@@ -480,14 +618,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                           await action_blocks
                                                               .vote(
                                                             context,
-                                                            index: 1,
+                                                            index: 2,
                                                           );
                                                           setState(() {});
                                                         },
                                                         child: Hero(
                                                           tag: FFAppState()
                                                               .post
-                                                              .photos[1],
+                                                              .photos[2],
                                                           transitionOnUserGestures:
                                                               true,
                                                           child: ClipRRect(
@@ -499,7 +637,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                 Image.network(
                                                               FFAppState()
                                                                   .post
-                                                                  .photos[1],
+                                                                  .photos[2],
                                                               width: 300.0,
                                                               height: 200.0,
                                                               fit: BoxFit.cover,
@@ -507,309 +645,154 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    if (FFAppState()
-                                                        .post
-                                                        .isVoted)
-                                                      Align(
-                                                        alignment:
-                                                            const AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration:
-                                                              const BoxDecoration(),
-                                                          child: Visibility(
-                                                            visible:
-                                                                FFAppState()
-                                                                    .post
-                                                                    .isVoted,
-                                                            child: Align(
-                                                              alignment:
-                                                                  const AlignmentDirectional(
-                                                                      0.0, 0.0),
-                                                              child: Text(
-                                                                FFAppState()
-                                                                    .post
-                                                                    .votes[1]
-                                                                    .toString(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium,
-                                                              ),
+                                                      if (FFAppState()
+                                                          .post
+                                                          .isVoted)
+                                                        Align(
+                                                          alignment:
+                                                              const AlignmentDirectional(
+                                                                  0.0, 0.0),
+                                                          child: wrapWithModel(
+                                                            model: _model
+                                                                .voteCountModel3,
+                                                            updateCallback:
+                                                                () => setState(
+                                                                    () {}),
+                                                            child:
+                                                                VoteCountWidget(
+                                                              picNumber: 2,
+                                                              post: FFAppState()
+                                                                  .post,
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ]
-                                              .divide(const SizedBox(width: 8.0))
-                                              .addToStart(const SizedBox(width: 4.0))
-                                              .addToEnd(const SizedBox(width: 4.0)),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                width: 100.0,
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        1.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryBackground,
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () async {
-                                                        await Navigator.push(
-                                                          context,
-                                                          PageTransition(
-                                                            type:
-                                                                PageTransitionType
-                                                                    .fade,
-                                                            child:
-                                                                FlutterFlowExpandedImageView(
-                                                              image:
-                                                                  Image.network(
-                                                                FFAppState()
-                                                                    .post
-                                                                    .photos[2],
-                                                                fit: BoxFit
-                                                                    .contain,
-                                                              ),
-                                                              allowRotation:
-                                                                  false,
-                                                              tag: FFAppState()
-                                                                  .post
-                                                                  .photos[2],
-                                                              useHeroAnimation:
-                                                                  true,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      onDoubleTap: () async {
-                                                        await action_blocks
-                                                            .vote(
-                                                          context,
-                                                          index: 2,
-                                                        );
-                                                        setState(() {});
-                                                      },
-                                                      child: Hero(
-                                                        tag: FFAppState()
-                                                            .post
-                                                            .photos[2],
-                                                        transitionOnUserGestures:
-                                                            true,
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                          child: Image.network(
-                                                            FFAppState()
-                                                                .post
-                                                                .photos[2],
-                                                            width: 300.0,
-                                                            height: 200.0,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    if (FFAppState()
-                                                        .post
-                                                        .isVoted)
-                                                      Align(
-                                                        alignment:
-                                                            const AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration:
-                                                              const BoxDecoration(),
-                                                          child: Visibility(
-                                                            visible:
-                                                                FFAppState()
-                                                                    .post
-                                                                    .isVoted,
-                                                            child: Align(
-                                                              alignment:
-                                                                  const AlignmentDirectional(
-                                                                      0.0, 0.0),
-                                                              child: Text(
-                                                                FFAppState()
-                                                                    .post
-                                                                    .votes[2]
-                                                                    .toString(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                width: 100.0,
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        1.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryBackground,
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () async {
-                                                        await Navigator.push(
-                                                          context,
-                                                          PageTransition(
-                                                            type:
-                                                                PageTransitionType
-                                                                    .fade,
-                                                            child:
-                                                                FlutterFlowExpandedImageView(
-                                                              image:
-                                                                  Image.network(
-                                                                FFAppState()
+                                              Expanded(
+                                                child: Container(
+                                                  width: 100.0,
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          1.0,
+                                                  decoration: BoxDecoration(
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primaryBackground,
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        focusColor:
+                                                            Colors.transparent,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () async {
+                                                          await Navigator.push(
+                                                            context,
+                                                            PageTransition(
+                                                              type:
+                                                                  PageTransitionType
+                                                                      .fade,
+                                                              child:
+                                                                  FlutterFlowExpandedImageView(
+                                                                image: Image
+                                                                    .network(
+                                                                  FFAppState()
+                                                                      .post
+                                                                      .photos[3],
+                                                                  fit: BoxFit
+                                                                      .contain,
+                                                                ),
+                                                                allowRotation:
+                                                                    false,
+                                                                tag: FFAppState()
                                                                     .post
                                                                     .photos[3],
-                                                                fit: BoxFit
-                                                                    .contain,
+                                                                useHeroAnimation:
+                                                                    true,
                                                               ),
-                                                              allowRotation:
-                                                                  false,
-                                                              tag: FFAppState()
+                                                            ),
+                                                          );
+                                                        },
+                                                        onDoubleTap: () async {
+                                                          await action_blocks
+                                                              .vote(
+                                                            context,
+                                                            index: 3,
+                                                          );
+                                                          setState(() {});
+                                                        },
+                                                        child: Hero(
+                                                          tag: FFAppState()
+                                                              .post
+                                                              .photos[3],
+                                                          transitionOnUserGestures:
+                                                              true,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8.0),
+                                                            child:
+                                                                Image.network(
+                                                              FFAppState()
                                                                   .post
                                                                   .photos[3],
-                                                              useHeroAnimation:
-                                                                  true,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      onDoubleTap: () async {
-                                                        await action_blocks
-                                                            .vote(
-                                                          context,
-                                                          index: 3,
-                                                        );
-                                                        setState(() {});
-                                                      },
-                                                      child: Hero(
-                                                        tag: FFAppState()
-                                                            .post
-                                                            .photos[3],
-                                                        transitionOnUserGestures:
-                                                            true,
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                          child: Image.network(
-                                                            FFAppState()
-                                                                .post
-                                                                .photos[3],
-                                                            width: 300.0,
-                                                            height: 200.0,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    if (FFAppState()
-                                                        .post
-                                                        .isVoted)
-                                                      Align(
-                                                        alignment:
-                                                            const AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration:
-                                                              const BoxDecoration(),
-                                                          child: Visibility(
-                                                            visible:
-                                                                FFAppState()
-                                                                    .post
-                                                                    .isVoted,
-                                                            child: Align(
-                                                              alignment:
-                                                                  const AlignmentDirectional(
-                                                                      0.0, 0.0),
-                                                              child: Text(
-                                                                FFAppState()
-                                                                    .post
-                                                                    .votes[3]
-                                                                    .toString(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium,
-                                                              ),
+                                                              width: 300.0,
+                                                              height: 200.0,
+                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                  ],
+                                                      if (FFAppState()
+                                                          .post
+                                                          .isVoted)
+                                                        Align(
+                                                          alignment:
+                                                              const AlignmentDirectional(
+                                                                  0.0, 0.0),
+                                                          child: wrapWithModel(
+                                                            model: _model
+                                                                .voteCountModel4,
+                                                            updateCallback:
+                                                                () => setState(
+                                                                    () {}),
+                                                            child:
+                                                                VoteCountWidget(
+                                                              picNumber: 3,
+                                                              post: FFAppState()
+                                                                  .post,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ]
-                                              .divide(const SizedBox(width: 8.0))
-                                              .addToStart(const SizedBox(width: 4.0))
-                                              .addToEnd(const SizedBox(width: 4.0)),
+                                            ]
+                                                .divide(const SizedBox(width: 8.0))
+                                                .addToStart(
+                                                    const SizedBox(width: 4.0))
+                                                .addToEnd(const SizedBox(width: 4.0)),
+                                          ),
                                         ),
-                                      ),
-                                    ]
-                                        .divide(const SizedBox(height: 8.0))
-                                        .addToStart(const SizedBox(height: 4.0))
-                                        .addToEnd(const SizedBox(height: 4.0)),
+                                      ]
+                                          .divide(const SizedBox(height: 8.0))
+                                          .addToStart(const SizedBox(height: 4.0))
+                                          .addToEnd(const SizedBox(height: 4.0)),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         } else {
                           return Align(
@@ -838,7 +821,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: 50.0,
                   decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).tertiary,
+                    color: FlutterFlowTheme.of(context).primaryBackground,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -861,7 +844,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 setState(() {
                                   FFAppState().post =
                                       PostStruct.fromSerializableMap(jsonDecode(
-                                          '{"photos":"[]","votes":"[]"}'));
+                                          '{\"photos\":\"[]\",\"votes\":\"[]\"}'));
                                 });
                                 if (shouldSetState) setState(() {});
                                 return;
@@ -904,7 +887,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
                               if (shouldSetState) setState(() {});
                             },
-                            text: 'salta',
+                            text: FFAppState().post.isVoted
+                                ? 'Continua'
+                                : 'Salta',
                             options: FFButtonOptions(
                               height: 40.0,
                               padding: const EdgeInsetsDirectional.fromSTEB(

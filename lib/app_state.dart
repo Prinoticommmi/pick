@@ -50,7 +50,7 @@ class FFAppState extends ChangeNotifier {
   late FlutterSecureStorage secureStorage;
 
   PostStruct _post = PostStruct.fromSerializableMap(
-      jsonDecode('{"photos":"[]","votes":"[]"}'));
+      jsonDecode('{\"photos\":\"[]\",\"votes\":\"[]\"}'));
   PostStruct get post => _post;
   set post(PostStruct value) {
     _post = value;
@@ -101,23 +101,23 @@ class FFAppState extends ChangeNotifier {
 
   List<CategoryStruct> _categoryStatus = [
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Abbigliamento","active":"true"}')),
+        jsonDecode('{\"name\":\"Abbigliamento\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Occhiali","active":"true"}')),
+        jsonDecode('{\"name\":\"Occhiali\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Acconciatura","active":"true"}')),
+        jsonDecode('{\"name\":\"Acconciatura\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Make-up","active":"true"}')),
+        jsonDecode('{\"name\":\"Make-up\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Fotografia","active":"true"}')),
+        jsonDecode('{\"name\":\"Fotografia\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Tatuaggi","active":"true"}')),
+        jsonDecode('{\"name\":\"Tatuaggi\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Animali","active":"true"}')),
+        jsonDecode('{\"name\":\"Animali\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Luoghi","active":"true"}')),
+        jsonDecode('{\"name\":\"Luoghi\",\"active\":\"true\"}')),
     CategoryStruct.fromSerializableMap(
-        jsonDecode('{"name":"Tutti","active":"true"}'))
+        jsonDecode('{\"name\":\"Tutti\",\"active\":\"true\"}'))
   ];
   List<CategoryStruct> get categoryStatus => _categoryStatus;
   set categoryStatus(List<CategoryStruct> value) {

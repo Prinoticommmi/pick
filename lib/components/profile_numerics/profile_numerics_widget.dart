@@ -6,7 +6,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
 import 'profile_numerics_model.dart';
 export 'profile_numerics_model.dart';
 
@@ -16,19 +15,19 @@ class ProfileNumericsWidget extends StatefulWidget {
     this.name,
     this.follow,
     required this.parameter3,
-    this.parameter4,
     this.posts,
     this.followers,
     this.following,
+    required this.parameter4,
   });
 
   final String? name;
   final bool? follow;
   final DocumentReference? parameter3;
-  final DocumentReference? parameter4;
   final int? posts;
   final int? followers;
   final int? following;
+  final DocumentReference? parameter4;
 
   @override
   State<ProfileNumericsWidget> createState() => _ProfileNumericsWidgetState();
@@ -65,8 +64,6 @@ class _ProfileNumericsWidgetState extends State<ProfileNumericsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,8 +153,6 @@ class _ProfileNumericsWidgetState extends State<ProfileNumericsWidget> {
                 },
                 text: widget.follow! ? 'Unfoll.' : 'Foll.',
                 options: FFButtonOptions(
-                  width: 70.0,
-                  height: 30.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
                   iconPadding:
                       const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),

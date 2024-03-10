@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'post_modal_widget.dart' show PostModalWidget;
+import 'vote_count_widget.dart' show VoteCountWidget;
 import 'package:flutter/material.dart';
 
-class PostModalModel extends FlutterFlowModel<PostModalWidget> {
+class VoteCountModel extends FlutterFlowModel<VoteCountWidget> {
   /// Initialization and disposal methods.
 
   @override

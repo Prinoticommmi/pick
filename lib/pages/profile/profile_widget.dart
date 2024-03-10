@@ -1,15 +1,17 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/supabase/supabase.dart';
+import '/components/pos_modal/pos_modal_widget.dart';
 import '/components/profile_numerics/profile_numerics_widget.dart';
 import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:octo_image/octo_image.dart';
-import 'package:provider/provider.dart';
 import 'profile_model.dart';
 export 'profile_model.dart';
 
@@ -45,8 +47,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return FutureBuilder<UsersRecord>(
       future: UsersRecord.getDocumentOnce(widget.userProfile!),
       builder: (context, snapshot) {
@@ -91,6 +91,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 onPressed: () async {
                   context.pop();
                 },
+              ),
+              title: Text(
+                'Profilo',
+                style: FlutterFlowTheme.of(context).headlineMedium.override(
+                      fontFamily: 'Outfit',
+                      color: Colors.white,
+                      fontSize: 22.0,
+                    ),
               ),
               actions: const [],
               centerTitle: false,
@@ -190,11 +198,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                   child:
                                                       FlutterFlowExpandedImageView(
                                                     image: OctoImage(
-                                                      placeholderBuilder:
-                                                          OctoPlaceholder
-                                                              .blurHash(
-                                                        profileUsersRecord
-                                                            .photoUrlBlurHash,
+                                                      placeholderBuilder: (_) =>
+                                                          SizedBox.expand(
+                                                        child: Image(
+                                                          image: BlurHashImage(
+                                                              profileUsersRecord
+                                                                  .photoUrlBlurHash),
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
                                                       image:
                                                           CachedNetworkImageProvider(
@@ -218,10 +229,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                 borderRadius:
                                                     BorderRadius.circular(50.0),
                                                 child: OctoImage(
-                                                  placeholderBuilder:
-                                                      OctoPlaceholder.blurHash(
-                                                    profileUsersRecord
-                                                        .photoUrlBlurHash,
+                                                  placeholderBuilder: (_) =>
+                                                      SizedBox.expand(
+                                                    child: Image(
+                                                      image: BlurHashImage(
+                                                          profileUsersRecord
+                                                              .photoUrlBlurHash),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                   image:
                                                       CachedNetworkImageProvider(
@@ -248,11 +263,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     name: profileUsersRecord.displayName,
                                     follow: columnFollowersRecord != null,
                                     parameter3: widget.userProfile!,
-                                    parameter4:
-                                        columnFollowersRecord?.reference,
                                     posts: profileUsersRecord.posts,
                                     followers: profileUsersRecord.followers,
                                     following: profileUsersRecord.following,
+                                    parameter4:
+                                        columnFollowersRecord!.reference,
                                   ),
                                 ),
                               ),
@@ -314,76 +329,189 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     ),
                                   ),
                                   Flexible(
-                                    child: Container(
-                                      width: MediaQuery.sizeOf(context).width *
-                                          1.0,
-                                      height:
-                                          MediaQuery.sizeOf(context).height *
-                                              1.0,
-                                      decoration: BoxDecoration(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryBackground,
-                                      ),
-                                      child: FutureBuilder<List<PostsRow>>(
-                                        future: PostsTable().queryRows(
-                                          queryFn: (q) => q
-                                              .eq(
-                                                'user_guid',
-                                                widget.userProfile?.id,
-                                              )
-                                              .order('created_at'),
+                                    child: Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          6.0, 0.0, 7.0, 0.0),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                1.0,
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                                1.0,
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryBackground,
                                         ),
-                                        builder: (context, snapshot) {
-                                          // Customize what your widget looks like when it's loading.
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: SizedBox(
-                                                width: 50.0,
-                                                height: 50.0,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
+                                        child: FutureBuilder<List<PostsRow>>(
+                                          future: PostsTable().queryRows(
+                                            queryFn: (q) => q
+                                                .eq(
+                                                  'user_guid',
+                                                  widget.userProfile?.id,
+                                                )
+                                                .order('created_at'),
+                                          ),
+                                          builder: (context, snapshot) {
+                                            // Customize what your widget looks like when it's loading.
+                                            if (!snapshot.hasData) {
+                                              return Center(
+                                                child: SizedBox(
+                                                  width: 50.0,
+                                                  height: 50.0,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                            Color>(
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .primary,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            );
-                                          }
-                                          List<PostsRow> gridViewPostsRowList =
-                                              snapshot.data!;
-                                          return GridView.builder(
-                                            padding: EdgeInsets.zero,
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              crossAxisSpacing: 10.0,
-                                              mainAxisSpacing: 10.0,
-                                              childAspectRatio: 1.0,
-                                            ),
-                                            scrollDirection: Axis.vertical,
-                                            itemCount:
-                                                gridViewPostsRowList.length,
-                                            itemBuilder:
-                                                (context, gridViewIndex) {
-                                              final gridViewPostsRow =
-                                                  gridViewPostsRowList[
-                                                      gridViewIndex];
-                                              return ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                                child: Image.network(
-                                                  gridViewPostsRow.photos[0],
-                                                  width: 300.0,
-                                                  height: 200.0,
-                                                  fit: BoxFit.cover,
-                                                ),
                                               );
-                                            },
-                                          );
-                                        },
+                                            }
+                                            List<PostsRow>
+                                                gridViewPostsRowList =
+                                                snapshot.data!;
+                                            return GridView.builder(
+                                              padding: EdgeInsets.zero,
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3,
+                                                crossAxisSpacing: 10.0,
+                                                mainAxisSpacing: 10.0,
+                                                childAspectRatio: 1.0,
+                                              ),
+                                              scrollDirection: Axis.vertical,
+                                              itemCount:
+                                                  gridViewPostsRowList.length,
+                                              itemBuilder:
+                                                  (context, gridViewIndex) {
+                                                final gridViewPostsRow =
+                                                    gridViewPostsRowList[
+                                                        gridViewIndex];
+                                                return InkWell(
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  focusColor:
+                                                      Colors.transparent,
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () async {
+                                                    _model.vote =
+                                                        await VotesTable()
+                                                            .queryRows(
+                                                      queryFn: (q) => q
+                                                          .eq(
+                                                            'post_user_guid',
+                                                            widget.userProfile
+                                                                ?.id,
+                                                          )
+                                                          .eq(
+                                                            'post_voter_guid',
+                                                            currentUserReference
+                                                                ?.id,
+                                                          ),
+                                                    );
+                                                    await showModalBottomSheet(
+                                                      isScrollControlled: true,
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      enableDrag: false,
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return GestureDetector(
+                                                          onTap: () => _model
+                                                                  .unfocusNode
+                                                                  .canRequestFocus
+                                                              ? FocusScope.of(
+                                                                      context)
+                                                                  .requestFocus(
+                                                                      _model
+                                                                          .unfocusNode)
+                                                              : FocusScope.of(
+                                                                      context)
+                                                                  .unfocus(),
+                                                          child: Padding(
+                                                            padding: MediaQuery
+                                                                .viewInsetsOf(
+                                                                    context),
+                                                            child: SizedBox(
+                                                              height: MediaQuery
+                                                                          .sizeOf(
+                                                                              context)
+                                                                      .height *
+                                                                  1.0,
+                                                              child:
+                                                                  PosModalWidget(
+                                                                post:
+                                                                    PostStruct(
+                                                                  isFetched:
+                                                                      true,
+                                                                  isVoted: _model
+                                                                          .vote.isNotEmpty,
+                                                                  id: gridViewPostsRow
+                                                                      .id,
+                                                                  photos:
+                                                                      gridViewPostsRow
+                                                                          .photos,
+                                                                  description:
+                                                                      gridViewPostsRow
+                                                                          .description,
+                                                                  votes:
+                                                                      gridViewPostsRow
+                                                                          .votes,
+                                                                  nComments:
+                                                                      gridViewPostsRow
+                                                                          .nComments,
+                                                                  category:
+                                                                      gridViewPostsRow
+                                                                          .category,
+                                                                  photosHash:
+                                                                      gridViewPostsRow
+                                                                          .photosBlurHash,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ).then((value) =>
+                                                        safeSetState(() {}));
+
+                                                    setState(() {});
+                                                  },
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                    child: Image.network(
+                                                      gridViewPostsRow.photos[
+                                                          valueOrDefault<int>(
+                                                        gridViewPostsRow.votes[
+                                                            functions
+                                                                .mostVotedPic(
+                                                                    PostStruct(
+                                                          votes:
+                                                              gridViewPostsRow
+                                                                  .votes,
+                                                        ))],
+                                                        5,
+                                                      )],
+                                                      width: 300.0,
+                                                      height: 200.0,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),

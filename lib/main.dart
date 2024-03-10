@@ -103,9 +103,11 @@ class _MyAppState extends State<MyApp> {
       ],
       theme: ThemeData(
         brightness: Brightness.light,
+        useMaterial3: false,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        useMaterial3: false,
       ),
       themeMode: _themeMode,
       routerConfig: _router,
@@ -139,6 +141,7 @@ class _NavBarPageState extends State<NavBarPage> {
   Widget build(BuildContext context) {
     final tabs = {
       'HomePage': const HomePageWidget(),
+      'SearchUser': const SearchUserWidget(),
       'SelectPics': const SelectPicsWidget(),
       'PersonalProfile': const PersonalProfileWidget(),
     };
@@ -152,11 +155,11 @@ class _NavBarPageState extends State<NavBarPage> {
           _currentPage = null;
           _currentPageName = tabs.keys.toList()[i];
         }),
-        backgroundColor: Colors.white,
-        selectedItemColor: FlutterFlowTheme.of(context).primary,
-        unselectedItemColor: const Color(0x8A000000),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        selectedItemColor: FlutterFlowTheme.of(context).primaryText,
+        unselectedItemColor: FlutterFlowTheme.of(context).secondaryText,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -168,11 +171,19 @@ class _NavBarPageState extends State<NavBarPage> {
             tooltip: '',
           ),
           BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search,
+              size: 24.0,
+            ),
+            label: 'Search',
+            tooltip: '',
+          ),
+          BottomNavigationBarItem(
             icon: FaIcon(
               FontAwesomeIcons.plusCircle,
               size: 24.0,
             ),
-            label: 'Home',
+            label: 'New',
             tooltip: '',
           ),
           BottomNavigationBarItem(
@@ -180,7 +191,7 @@ class _NavBarPageState extends State<NavBarPage> {
               FontAwesomeIcons.solidSmileBeam,
               size: 24.0,
             ),
-            label: 'Home',
+            label: 'You',
             tooltip: '',
           )
         ],

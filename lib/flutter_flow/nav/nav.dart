@@ -141,6 +141,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'tttt',
           path: '/tttt',
           builder: (context, params) => const TtttWidget(),
+        ),
+        FFRoute(
+          name: 'SearchUser',
+          path: '/searchUser',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'SearchUser')
+              : const SearchUserWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
